@@ -1,0 +1,28 @@
+#  Ordenación de Arreglo Multidimensional
+
+def ordenar_fila(matriz, fila):
+    matriz[fila] = sorted(matriz[fila])
+    return matriz
+
+# Matriz de ejemplo (3x3)
+matriz_ejemplo_ordenar = [
+    [9, 6, 3],
+    [7, 4, 1],
+    [8, 5, 2]
+]
+
+# Fila a ordenar
+fila_a_ordenar = 1
+
+# Mostrar matriz original
+print("Matriz Original:")
+for fila in matriz_ejemplo_ordenar:
+    print(fila)
+
+# Llamada a la función de ordenación
+matriz_ordenada = ordenar_fila(matriz_ejemplo_ordenar, fila_a_ordenar)
+
+# Mostrar matriz con la fila ordenada
+print("\nMatriz con Fila Ordenada:")
+for fila in matriz_ordenada:
+    print(fila)
