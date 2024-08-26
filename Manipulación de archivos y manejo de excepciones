@@ -1,0 +1,93 @@
+import os
+
+class Producto:
+    def __init__(self, id_producto, nombre, cantidad, precio):
+        self.id_producto = id_producto
+        self.nombre = nombre
+        self.cantidad = cantidad
+        self.precio = precio
+
+    def __str__(self):
+        return f"{self.id_producto},{self.nombre},{self.cantidad},{self.precio}"
+
+    @staticmethod
+    def from_string(data_string):
+        id_producto, nombre, cantidad, precio = data_string.split(',')
+        return Producto(id_producto, nombre, int(cantidad), float(precio))
+
+
+class Inventario:
+    def __init__(self, archivo_inventario='inventario.txt'):
+        self.productos = {}
+        self.archivo_inventario = archivo_inventario
+        self.cargar_inventario_desde_archivo()
+
+    def cargar_inventario_desde_archivo(self):
+        """Carga productos desde el archivo al iniciar el programa."""
+        try:
+            with open(self.archivo_inventario, 'r') as archivo:
+                for linea in archivo:
+                    producto = Producto.from_string(linea.strip())
+                    self.productos[producto.id_producto] = producto
+            print("Inventario cargado exitosamente desde el archivo.")
+        except FileNotFoundError:
+            print(f"Archivo '{self.archivo_inventario}' no encontrado. Se creará uno nuevo.")
+        except PermissionError:
+            print(f"Error de permisos al intentar leer '{self.archivo_inventario}'.")
+        except Exception as e:
+            print(f"Ocurrió un error inesperado al cargar el archivo: {e}")
+
+    def guardar_inventario_en_archivo(self):
+        """Guarda todos los productos en el archivo después de cada operación."""
+        try:
+            with open(self.archivo_inventario, 'w') as archivo:
+                for producto in self.productos.values():
+                    archivo.write(str(producto) + '\n')
+            print("Inventario guardado exitosamente en el archivo.")
+        except PermissionError:
+            print(f"Error de permisos al intentar escribir en '{self.archivo_inventario}'.")
+        except Exception as e:
+            print(f"Ocurrió un error inesperado al guardar en el archivo: {e}")
+
+    def agregar_producto(self, producto):
+        """Añade un producto nuevo al inventario."""
+        if producto.id_producto in self.productos:
+            print(f"El producto con ID {producto.id_producto} ya existe.")
+        else:
+            self.productos[producto.id_producto] = producto
+            self.guardar_inventario_en_archivo()
+            print(f"Producto '{producto.nombre}' añadido exitosamente.")
+
+    def actualizar_producto(self, id_producto, cantidad, precio):
+        """Actualiza la cantidad y el precio de un producto existente."""
+        if id_producto in self.productos:
+            producto = self.productos[id_producto]
+            producto.cantidad = cantidad
+            producto.precio = precio
+            self.guardar_inventario_en_archivo()
+            print(f"Producto '{producto.nombre}' actualizado exitosamente.")
+        else:
+            print(f"No se encontró ningún producto con ID {id_producto}.")
+
+    def eliminar_producto(self, id_producto):
+        """Elimina un producto del inventario."""
+        if id_producto in self.productos:
+            del self.productos[id_producto]
+            self.guardar_inventario_en_archivo()
+            print(f"Producto con ID {id_producto} eliminado exitosamente.")
+        else:
+            print(f"No se encontró ningún producto con ID {id_producto}.")
+
+# --- Ejemplo de uso del programa ---
+if __name__ == "__main__":
+    inventario = Inventario()
+
+    # Agregar un nuevo producto
+    producto1 = Producto('001', 'Laptop', 10, 1500.00)
+    inventario.agregar_producto(producto1)
+
+    # Actualizar producto existente
+    inventario.actualizar_producto('001', 15, 1400.00)
+
+    # Eliminar un producto
+    inventario.eliminar_producto('001')
