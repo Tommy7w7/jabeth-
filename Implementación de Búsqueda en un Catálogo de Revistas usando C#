@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    // Catálogo de revistas (lista de strings)
+    static List<string> catalogo = new List<string>()
+    {
+        "National Geographic",
+        "Scientific American",
+        "Time",
+        "Forbes",
+        "Nature",
+        "The Economist",
+        "Popular Science",
+        "Sports Illustrated",
+        "Reader's Digest",
+        "Wired"
+    };
+
+    static void Main(string[] args)
+    {
+        int opcion;
+        do
+        {
+            Console.Clear();
+            Console.WriteLine("=== Catálogo de Revistas ===");
+            Console.WriteLine("1. Buscar revista");
+            Console.WriteLine("2. Mostrar catálogo");
+            Console.WriteLine("3. Salir");
+            Console.Write("Seleccione una opción: ");
+            
+            if (!int.TryParse(Console.ReadLine(), out opcion)) opcion = 0;
+
+            switch (opcion)
+            {
+                case 1:
+                    Console.Write("Ingrese el título a buscar: ");
+                    string titulo = Console.ReadLine();
+
+                    // Ejemplo con búsqueda recursiva
+                    bool encontrado = BuscarRecursivo(catalogo, titulo, 0);
+
+                    if (encontrado)
+                        Console.WriteLine("Resultado: Encontrado");
+                    else
+                        Console.WriteLine("Resultado: No encontrado");
+
+                    Console.WriteLine("\nPresione una tecla para continuar...");
+                    Console.ReadKey();
+                    break;
+
+                case 2:
+                    Console.WriteLine("\nCatálogo de revistas:");
+                    foreach (var revista in catalogo)
+                        Console.WriteLine("- " + revista);
+
+                    Console.WriteLine("\nPresione una tecla para continuar...");
+                    Console.ReadKey();
+                    break;
+
+                case 3:
+                    Console.WriteLine("Saliendo del programa...");
+                    break;
+
+                default:
+                    Console.WriteLine("Opción inválida. Intente nuevamente.");
+                    Console.ReadKey();
+                    break;
+            }
+
+        } while (opcion != 3);
+    }
+
+    /// <summary>
+    /// Método recursivo para buscar un título en la lista de revistas.
+    /// </summary>
+    static bool BuscarRecursivo(List<string> lista, string titulo, int indice)
+    {
+        // Caso base: si llegamos al final de la lista
+        if (indice >= lista.Count)
+            return false;
+
+        // Comparación sin distinción de mayúsculas/minúsculas
+        if (lista[indice].Equals(titulo, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // Llamada recursiva con el siguiente índice
+        return BuscarRecursivo(lista, titulo, indice + 1);
+    }
+}
